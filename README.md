@@ -1,4 +1,4 @@
-# structural_sparsity
+# structural_sparsity_fdr
 
 #### Data-Adaptive Inference with FDR Control for Structural Sparsity Problems
 

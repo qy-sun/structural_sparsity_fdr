@@ -31,4 +31,4 @@ It implements a unified framework for data-adaptive inference with false discove
 
 ## **Additional Notes**
 
-Portions of the code were executed in parallel on the Duke Computer Cluster. As a result, minor discrepancies may occur when reproducing the results locally, primarily due to differences in random seeds.
+Portions of the code were executed in parallel on the computer cluster. As a result, minor discrepancies may occur when reproducing the results locally, primarily due to differences in random seeds.

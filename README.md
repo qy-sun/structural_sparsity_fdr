@@ -8,10 +8,10 @@ This repository contains code for reproducing the results in the paper *"Data-Ad
 
 The repository implements a unified framework for data-adaptive inference with false discovery rate (FDR) control under structural sparsity. Specifically, it includes:
 
-* **Transformational Lasso (TLasso)**
-* **Stability Transformational Knockoff (StatKnock)**
-* **Sequential Adjusted Transformational Lasso (SATLasso)**
-* **Two-Stage SATLasso–StatKnock Procedure (SATLasso + StatKnock)**
+* **TLasso: Transformational Lasso**
+* **StatKnock: Stability Transformational Knockoff**
+* **SATLasso: Sequential Adjusted Transformational Lasso**
+* **SATLasso + StatKnock Two-Stage Procedure**
 
 ---
 

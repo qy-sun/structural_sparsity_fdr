@@ -11,6 +11,7 @@ The repository implements a unified framework for data-adaptive inference with f
 * **Transformational Lasso (TLasso)**
 * **Stability Transformational Knockoff (StatKnock)**
 * **Sequential Adjusted Transformational Lasso (SATLasso)**
+* **Two-Stage SATLasso–StatKnock Procedure (SATLasso + StatKnock)**
 
 ---
 

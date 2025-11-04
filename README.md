@@ -19,12 +19,12 @@ The repository implements a unified framework for data-adaptive inference with f
 
 ---
 
-## **Simulation**
+## **Simulation Studies**
 
 
 ---
 
-## **Real Data**
+## **Real Data Analysis**
 
 ---
 

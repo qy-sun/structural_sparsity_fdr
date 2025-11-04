@@ -11,7 +11,7 @@ It implements a unified framework for data-adaptive inference with false discove
 * **TLasso: Transformational Lasso**
 * **StatKnock: Stability Transformational Knockoff**
 * **SATLasso: Sequential Adjusted Transformational Lasso**
-* **SATLasso + StatKnock Two-Stage Procedure**
+* **Two-Stage SATLasso + StatKnock Procedure**
 
 ---
 

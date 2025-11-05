@@ -42,4 +42,4 @@ Each main file begins with a detailed commented header specifying purpose, input
 
 ## **Additional Notes**
 
-Portions of the code were executed in parallel on the computer cluster. As a result, minor discrepancies may occur when reproducing the results locally, primarily due to differences in random seeds.
+Some experiments were executed on the Duke Compute Cluster (DCC) using parallel jobs to accelerate replication. Minor numerical discrepancies may occur when running locally due to randomization and parallel execution order. All random seeds are set (set.seed(2025)) for baseline reproducibility.

@@ -17,6 +17,9 @@ It implements a unified framework for data-adaptive inference with false discove
 
 ## **Description**
 
+<img width="1426" height="598" alt="workflow1-StatKnock" src="https://github.com/user-attachments/assets/035b803d-2957-44df-a333-47312226f23a" />
+<img width="1512" height="435" alt="workflow2-SATLasso-StatKnock" src="https://github.com/user-attachments/assets/b92ff3a2-fef1-46ba-b986-c93a7edde7e1" />
+
 
 ---
 

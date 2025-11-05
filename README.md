@@ -66,8 +66,7 @@ The data preprocessing follows the official **MRICloud–T1 segmentation pipelin
 
 #### **Step3: Confirm Slice Type in ROIEditor**  
    - Open the converted images in **ROIEditor** (MRIStudio).  
-   - Verify that the slice type is correct: *Sagittal*, *Axial*, or *Sagittal data converted to Axial*.  
-   - In this study, the source files were **Sagittal** scans.
+   - Verify that the slice type is correct: *Sagittal*, *Axial*, or *Sagittal data converted to Axial*. In this study, the source files were **Sagittal** scans.
 
 #### **Step4: Perform Segmentation on MRICloud**  
    - Upload the preprocessed files to **MRICloud** for automatic segmentation. 
@@ -80,9 +79,7 @@ The data preprocessing follows the official **MRICloud–T1 segmentation pipelin
    - The segmentation results can be visualized directly on the **MRICloud** web interface or inspected locally using **ROIEditor**.
 
 #### **Step5: Match Cognitive Outcomes**  
-   - The cognitive outcome variable (response `y`) is the **ADNI_Mem** composite memory score from  
-     **“UW - Neuropsych Summary Scores [ADNI1, GO, 2, 3]”**.  
-   - This variable serves as a standardized cognitive performance indicator widely used in ADNI literature.  
+   - The cognitive outcome variable (response `y`) is the **ADNI_Mem** composite memory score from **“UW - Neuropsych Summary Scores [ADNI1, GO, 2, 3]”**. This variable serves as a standardized cognitive performance indicator widely used in ADNI literature.  
    - Match each MRI sample to `ADNI_Mem` by aligning:
      - The last four digits of the file name with the **RID** field.  
      - The **EXAMDATE** with the imaging acquisition date.

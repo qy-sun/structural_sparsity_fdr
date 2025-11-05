@@ -92,7 +92,6 @@ The data preprocessing follows the official **MRICloud–T1 segmentation pipelin
 ### **Remarks**
 
 - The segmentation results can also be visualized directly on the **MRICloud** web interface or inspected locally using **ROIEditor**.  
-- Due to privacy regulations, the processed ADNI data and lookup tables are **not publicly included** in this repository.  
 - Reproduction of this section requires individual ADNI data access approval.
 
 ---

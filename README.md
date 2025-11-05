@@ -70,10 +70,8 @@ The data preprocessing follows the official **MRICloud–T1 segmentation pipelin
 
 4. **Segmentation on MRICloud**  
    - Upload the preprocessed files to **MRICloud** for automatic segmentation.  
-   - For batch uploads:
-     - Combine up to **five subjects per .zip file** (no subfolders, and compressed using the system’s default “Compress to ZIP” function while avoiding any third-party compression software).  
-   - Choose the appropriate **Slice Type** and **Atlas** version.  
-     - Recommended: `Adult_286labels_10atlases_V5L` (latest version of M2_252).  
+   - For batch uploads, combine up to **five subjects per .zip file** (no subfolders, and compressed using the system’s default “Compress to ZIP” function while avoiding any third-party compression software).  
+   - Choose the appropriate **Slice Type** and **Atlas** version. Recommended: `Adult_286labels_10atlases_V5L` (latest version of M2_252).  
    - Submit and wait for processing to complete.  
    - After segmentation, download the result package and extract:  
      - `corrected_stats.txt` – contains regional quantitative measures (used as feature matrix `X`).  
@@ -90,8 +88,6 @@ The data preprocessing follows the official **MRICloud–T1 segmentation pipelin
 6. **Integration**  
    - Combine `corrected_stats.txt` (regional measures) with the matched `ADNI_Mem` scores into a single dataset.  
    - Construct transformation matrices (`D1`, `D1`, `D3`) using the **lookup table**, which define the structural sparsity constraints used by the proposed SATLasso–StatKnock framework.
-
----
 
 ### **Remarks**
 

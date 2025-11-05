@@ -29,6 +29,7 @@ It implements a unified framework for data-adaptive inference with false discove
 ---
 
 ## **Real Data Analysis**
+<img width="7215" height="2125" alt="Brain" src="https://github.com/user-attachments/assets/09c7b101-7069-499e-b529-6b16ac76c002" />
 
 ---
 

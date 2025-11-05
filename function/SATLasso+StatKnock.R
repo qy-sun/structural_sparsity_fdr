@@ -14,8 +14,9 @@
 #   list(S = selected indices in original gamma space,
 #        S_plus = conservative (knockoff+) selection if available)
 ###############################################################################
-source("StatKnock.R")
-source("SATLasso.R")
+this.dir <- dirname(sys.frame(1)$ofile)
+source(file.path(this.dir, "StatKnock.R"))
+source(file.path(this.dir, "SATLasso.R"))
 ###############################################################################
 ###############################################################################
 ###############################################################################

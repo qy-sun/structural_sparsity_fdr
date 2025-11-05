@@ -34,12 +34,10 @@ Each main file begins with a detailed commented header specifying purpose, input
 
 ## **Simulation Studies**
 
-### **simulation/**
-
-- `TLasso_exp.R` — Reproduces **Table 1** and **Figure 4** in the main text.  
-- `SATLasso+StatKnock_exp.R` — Reproduces **Figure 5** in the main text.
-- `StatKnock_exp.R` — Reproduces **Figure S.4** and **Figure S.5** in the main text.
-- `SATLasso_exp.R` — Reproduces **Table S.1** and **Table S.2** in the main text.
+- `simulation/TLasso_exp.R` — Reproduces **Table 1** and **Figure 4** in the main text.  
+- `simulation/SATLasso+StatKnock_exp.R` — Reproduces **Figure 5** in the main text.
+- `simulation/StatKnock_exp.R` — Reproduces **Figure S.4** and **Figure S.5** in the main text.
+- `simulation/SATLasso_exp.R` — Reproduces **Table S.1** and **Table S.2** in the main text.
 ---
 
 ## **Real Data Analysis**

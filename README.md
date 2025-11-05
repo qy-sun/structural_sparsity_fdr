@@ -49,7 +49,7 @@ The real data analysis in this work is based on the **Alzheimer's Disease Neuroi
 - **MRIStudio platform:** [https://www.mristudio.org/installation.html](https://www.mristudio.org/installation.html)  
 - **Reference tutorial:** [MRICloud T1 Tutorial](https://braingps.mricloud.org/docs/tutorials/mricloud.html)
 
-#### **Data Acquisition and Preprocessing Workflow**
+### **Data Acquisition and Preprocessing Workflow**
 
 The data preprocessing follows the official **MRICloud–T1 segmentation pipeline** with manual verification in **ROIEditor**. Below outlines the detailed workflow used to obtain the Level 5 regional volume data used in our analysis:
 
@@ -89,7 +89,7 @@ The data preprocessing follows the official **MRICloud–T1 segmentation pipelin
    - Combine `corrected_stats.txt` (regional measures) with the matched `ADNI_Mem` scores into a single dataset.  
    - Construct transformation matrices (`D1`, `D1`, `D3`) using the **lookup table**, which define the structural sparsity constraints used by the proposed SATLasso–StatKnock framework.
 
-#### **Remarks**
+### **Remarks**
 
 - The segmentation results can also be visualized directly on the **MRICloud** web interface or inspected locally using **ROIEditor**.  
 - Due to privacy regulations, the processed ADNI data and lookup tables are **not publicly included** in this repository.  

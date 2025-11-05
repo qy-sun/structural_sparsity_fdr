@@ -56,7 +56,7 @@ The data preprocessing follows the official **MRICloud–T1 segmentation pipelin
 
 #### **Step1: Download from ADNI Portal**  
    - Obtain sMRI data in **DICOM (dcm)** format from the ADNI portal.  
-   - Select relevant metadata (e.g., subject ID, age, sex, diagnosis group, and cognitive assessments such as **MMSE**).  
+   - Select relevant metadata (e.g., subject ID, age, sex, diagnosis group, and cognitive assessments).  
    - Download and retain the associated `.csv` files that record acquisition information and assessment scores.  
    - Use 2D structural MRI scans for subsequent processing.
 
@@ -79,13 +79,13 @@ The data preprocessing follows the official **MRICloud–T1 segmentation pipelin
    - The segmentation results can be visualized directly on the **MRICloud** web interface or inspected locally using **ROIEditor**.
 
 #### **Step5: Match Cognitive Outcomes**  
-   - The cognitive outcome variable (response `y`) is the **ADNI_Mem** composite memory score from **“UW - Neuropsych Summary Scores [ADNI1, GO, 2, 3]”**. This variable serves as a standardized cognitive performance indicator widely used in ADNI literature.  
-   - Match each MRI sample to `ADNI_Mem` by aligning:
+   - The cognitive outcome variable (response `y`) is the **ADNI_MEM** composite memory score from **“UW - Neuropsych Summary Scores [ADNI1, GO, 2, 3]”**. This variable serves as a standardized cognitive performance indicator widely used in ADNI literature.  
+   - Match each MRI sample to `ADNI_MEM` by aligning:
      - The last four digits of the file name with the **RID** field.  
      - The **EXAMDATE** with the imaging acquisition date.
 
 #### **Step6: Integrate and Construct Transformation Matrices**  
-   - Combine `corrected_stats.txt` (regional measures) with the matched `ADNI_Mem` scores into a single dataset.  
+   - Combine `corrected_stats.txt` (regional measures) with the matched `ADNI_MEM` scores into a single dataset.  
    - Construct transformation matrices (`D1`, `D1`, `D3`) using the **lookup table**, which define the structural sparsity constraints used by the proposed SATLasso–StatKnock framework.
 
 ---

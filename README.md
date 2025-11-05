@@ -24,7 +24,7 @@ The repository is organized into the following main directories:
 | **function/** | Core implementation of the proposed methods, including TLasso, SATLasso, StatKnock, and SATLasso+StatKnock. |
 | **function/other methods/** | Comparative baseline methods such as SplitKnockoff, GKnockoff, DS, and BY for structural sparsity problems. |
 | **simulation/** | Simulation scripts for reproducing all experiments in the paper and its supplement. |
-| **simulation/helper/** | Graph difference operators construction and corresponding $\beta$ generation utilities. |
+| **simulation/helper/** | Graph difference operators construction and corresponding coefficient generation utilities. |
 | **real/** | Scripts for ADNI sMRI real-data analysis with 5 level hierarchical brain regions. |
 | **real/lookup/** | Lookup tables for hierarchical brain regions and the corresponding edge endpoints in the brain region graph. |
 
@@ -33,6 +33,8 @@ Each main file begins with a detailed commented header specifying purpose, input
 ---
 
 ## **Simulation Studies**
+
+### **simulation/**
 
 - `TLasso_exp.R` — Reproduces **Table 1** and **Figure 4** in the main text.  
 - `SATLasso+StatKnock_exp.R` — Reproduces **Figure 5** in the main text.

@@ -44,6 +44,10 @@ Each main file begins with a detailed commented header specifying purpose, input
 
 ## **Real Data Analysis**
 
+
+> **Note:** Due to data-sharing and privacy restrictions, the ADNI dataset are not included in this repository.
+
+
 ---
 
 ## **Additional Notes**

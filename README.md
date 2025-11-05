@@ -47,7 +47,6 @@ Due to data-sharing and privacy restrictions, the ADNI dataset is **not included
 Below we describe the **data acquisition, preprocessing, and integration workflow** used to obtain the analysis-ready dataset.  
 Reproduction of this section requires **individual ADNI data access approval**.
 
-**Resources**
 - **ADNI data portal:** [https://adni.loni.usc.edu/data-samples/access-data/](https://adni.loni.usc.edu/data-samples/access-data/)  
 - **MRICloud platform:** [https://mricloud.org/](https://mricloud.org/)  
 - **MRIStudio platform:** [https://www.mristudio.org/installation.html](https://www.mristudio.org/installation.html)  

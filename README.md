@@ -1,6 +1,6 @@
 # **Code for "Data-Adaptive Inference with FDR Control for Structural Sparsity Problems"**
 
-Under review and available on [arXiv](https://arxiv.org/abs/xxxx.xxxxx)
+Under review
 
 ---
 

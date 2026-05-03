@@ -171,9 +171,9 @@ for (i in 1:nIterations) {
   SplitKnockoff_Sel_3
   
   for (method in methods) {
-    for (i in 1:3) {
-      freq_name <- paste0(method, "_frequency_", i)
-      sel_name <- paste0(method, "_Sel_", i)
+    for (g in 1:3) {
+      freq_name <- paste0(method, "_frequency_", g)
+      sel_name <- paste0(method, "_Sel_", g)
       
       if (exists(freq_name) && exists(sel_name)) {
         freq <- get(freq_name)

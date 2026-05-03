@@ -109,7 +109,7 @@ StatKnock <- function(X, y, D, L = 100, q = 0.1,
   for(i in 1:L){
     index <- sample((1:n), floor(n/2), replace = F)
     
-    fit1 = glmnet(x = X_aug[index, ], y = y[index], family = "gaussian", intercept = F, alpha = 1, lambda = best_lambda, standardize = T)
+    fit1 = glmnet(x = X_aug[index, ], y = y_star[index], family = "gaussian", intercept = F, alpha = 1, lambda = best_lambda, standardize = T)
     bhat1 <- as.vector(stats::coef(fit1)[-1])
     S_index1 <- which(bhat1!=0)
 
@@ -131,13 +131,13 @@ StatKnock <- function(X, y, D, L = 100, q = 0.1,
   
   # find the knockoff threshold T
   t = sort(c(0, abs(W)))
-  ratio = c(rep(0, m))
+  ratio = numeric(length(t))
   
-  for (j in 1:m) {
+  for (j in seq_along(t)) {
     ratio[j] = (sum(W <= -t[j]))/max(1, sum(W >= t[j]))
   }
   id = which(ratio <= q)[1]
-  if(length(id) == 0){
+  if (is.na(id)) {
     T1 = Inf
   } else {
     T1 = t[id]
@@ -145,13 +145,13 @@ StatKnock <- function(X, y, D, L = 100, q = 0.1,
   
   # find the knockoff_plus threshold T_plus
   t_plus = sort(c(0, abs(W)))
-  ratio_plus = c(rep(0, m))
+  ratio_plus = numeric(length(t_plus))
   
-  for (j in 1:m) {
+  for (j in seq_along(t_plus)) {
     ratio_plus[j] = (1 + sum(W <= -t_plus[j]))/max(1, sum(W >= t_plus[j]))
   }
   id_plus = which(ratio_plus <= q)[1]
-  if(length(id_plus) == 0){
+  if (is.na(id_plus)) {
     T_plus = Inf
   } else {
     T_plus = t_plus[id_plus]

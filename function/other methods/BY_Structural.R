@@ -7,15 +7,12 @@
 #   Benjamini, Y., & Yekutieli, D. (2001). The control of the false discovery rate 
 #   in multiple testing under dependency. Annals of Statistics, 29(4), 1165–1188.
 ###############################################################################
-library(hdi)
-library(MASS)
 ###############################################################################
 ###############################################################################
 ###############################################################################
 ###############################################################################
 ###############################################################################
-###############################################################################
-BY_GLasso <- function(X, y, D, q, method = "auto", n_repeats = 50) {
+BY_GLasso <- function(X, y, D, q, method = "auto") {
   n <- nrow(X)
   p <- ncol(X)
   m <- nrow(D)
@@ -34,10 +31,6 @@ BY_GLasso <- function(X, y, D, q, method = "auto", n_repeats = 50) {
     # Univariate regression method for high dimensions
     p_values <- univariate_high_estimate(X, y, D, p, m)
     
-  } else if (method == "univariate_low") {
-    # Univariate regression method for low dimensions
-    p_values <- univariate_low_estimate(X, y, D, p, m)
-    
   } else if (method == "OLS") {
     # OLS method
     OLS_Fit <- lm(y ~ X)
@@ -48,7 +41,7 @@ BY_GLasso <- function(X, y, D, q, method = "auto", n_repeats = 50) {
       t_statistics[j] <- D[j, ] %*% coefficients / 
         sqrt(noise_variance * t(D[j, ]) %*% solve(t(X) %*% X) %*% D[j, ])
     }
-    p_values <- 2 * pt(-abs(t_statistics), n - p)
+    p_values <- 2 * pt(-abs(t_statistics), n - p - 1)
   }
   #print(method)
   
@@ -86,32 +79,7 @@ univariate_high_estimate <- function(X, y, D, p, m) {
 ###############################################################################
 ###############################################################################
 ###############################################################################
-## (2) Univariate Regression Method for low dimensions
-univariate_low_estimate <- function(X, y, D, p, m) {
-  n <- length(y)
-  uni_beta <- numeric(p)
-  noise_variance_single <- numeric(p)
-  for (j in 1:p) {
-    model <- lm(y ~ X[, j])
-    uni_beta[j] <- summary(model)$coefficients
-    res <- residuals(model)
-    noise_variance_single[j] <- sum(res^2) / (n - 2)
-  }
-  noise_variance = mean(noise_variance_single)
-  
-  t_statistics <- numeric(m)
-  for (j in 1:m) {
-    t_statistics[j] <- D[j, ] %*% uni_beta / 
-      sqrt(noise_variance * t(D[j, ]) %*% solve(t(X) %*% X) %*% D[j, ])
-  }
-  
-  p_values <- 2 * pt(-abs(t_statistics), n - p)
-  return(p_values)
-}
-###############################################################################
-###############################################################################
-###############################################################################
-## (3) Function to perform BY adjustment and selection
+## (2) Function to perform BY adjustment and selection
 BY_selection <- function(p_values, q) {
   BY <- (p.adjust(p_values, method = "BY") < q)
   BY_Sel <- which(as.vector(BY) == TRUE)

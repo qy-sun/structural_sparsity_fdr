@@ -67,7 +67,7 @@ SATLasso <- function(X,y,D, alpha_grid = 10^seq(-3, 0, length.out = 30),
                           matrix(0, m - r, 1))
       X_aug_test <- rbind(
         cbind(1/sqrt(2*n_test) * X_test, 1/sqrt(2*n_test) * X_N_test),
-        cbind(matrix(0, m - r, p), 1 / sqrt(alpha) * diag(m - r))
+        cbind(matrix(0, m - r, p), sqrt(alpha) * diag(m - r))
       )
       
       if (r == p) {

@@ -277,7 +277,7 @@ fdp_power_list_1D_SFL = sapply(1:nIterations, function(it) {
         fdp_power3_3$fdp, fdp_power3_3$power, fdp_power3_3$ssr,
         fdp_power4_1$fdp, fdp_power4_1$power, fdp_power4_1$ssr,
         fdp_power4_2$fdp, fdp_power4_2$power, fdp_power4_2$ssr,
-        fdp_power4_3$fdp, fdp_power4_3$power, fdp_power4_3$ssr,
+        fdp_power4_3$fdp, fdp_power4_3$power, fdp_power4_3$ssr
   )
 })
 save(fdp_power_list_1D_SFL, file = "SATLasso_1D_SFL.RData")

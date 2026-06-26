@@ -33,7 +33,6 @@
 ###############################################################################
 source("../function/SATLasso+StatKnock.R")
 source("../function/other methods/HD_SplitKnockoff.R")
-source("../function/other methods/HD_GKnockoff.R")
 source("../function/other methods/BY_Structural.R")
 source("../simulation/helper/Graph Difference Operator.R")
 library(GKnockoff)     # package version 0.1.0

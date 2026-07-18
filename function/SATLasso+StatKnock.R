@@ -67,11 +67,17 @@ SATLasso_StatKnock <- function(X, y, D,
   ## (v) Form screened D matrix
   D_scr <- D[S_gamma, S_beta]
   
-  # print(dim(D_scr))
-  # print(all(which(abs(D %*% Beta0)> 1e-10) %in% S_gamma)) ## Sure screening of gamma
-  # print(all(which(abs(Beta0)> 1e-10) %in% S_beta))        ## Sure screening of beta
-  # print(which(D %*% Beta0!=0))                             ## Original active set S
-  # print(S_gamma[which(D_scr %*% Beta0[S_beta]!=0)])    ## S after screening
+  # path      <- SATLasso(X1, y1, D, stop = floor(n2 / log(n2)))$es
+  # max_gamma <- floor(n2 / 2)
+  # max_beta  <- n2 - 1
+  # S_gamma <- integer(0); S_beta <- integer(0)
+  # for (g in path) {
+  #   cand_g <- c(S_gamma, g)
+  #   if (length(cand_g) > max_gamma) break
+  #   cand_b <- which(colSums(abs(D[cand_g, , drop = FALSE]) != 0) > 0)
+  #   if (length(cand_b) > max_beta) break
+  #   S_gamma <- cand_g; S_beta <- cand_b
+  # }
   
   #############################################
   ## 3) Selection on (X2, y2)
@@ -89,6 +95,21 @@ SATLasso_StatKnock <- function(X, y, D,
     Sel      <- S_gamma[stat_fit$S]
     Sel_plus <- S_gamma[stat_fit$S_plus]
   }
+  
+  # Sel <- integer(0); Sel_plus <- integer(0)
+  # while (length(S_gamma) >= 2) {
+  #   out <- tryCatch({
+  #     D_scr <- D[S_gamma, S_beta, drop = FALSE]
+  #     stat_fit <- StatKnock(X2[, S_beta, drop = FALSE], y2, D = D_scr,
+  #                           L = L, q = q, cv = cv, cvfolds = cvfolds,
+  #                           lambda_cr = lambda_cr, knockoff_method = knockoff_method,
+  #                           knockoff_args = knockoff_args)
+  #     list(S = S_gamma[stat_fit$S], S_plus = S_gamma[stat_fit$S_plus])
+  #   }, error = function(e) NULL)
+  #   if (!is.null(out)) { Sel <- out$S; Sel_plus <- out$S_plus; break }
+  #   S_gamma <- S_gamma[-length(S_gamma)]
+  #   S_beta  <- which(colSums(abs(D[S_gamma, , drop = FALSE]) != 0) > 0)
+  # }
   
   return(list(S=Sel, S_plus=Sel_plus))
 }

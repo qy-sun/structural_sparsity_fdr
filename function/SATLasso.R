@@ -266,30 +266,33 @@ SLasso <- function(X,y, stop = NULL, callback = NULL){
   ## Initial model
   index.m <- sequential_select_whole(X,y,p,path)
   path    <- c(path,index.m)
-  EBIC[1] <- n*log(t(y)%*%y/n) + length(path)*log(n) + eta*lchoose(p,length(path))
   W <- diag(rep(1,n)) - (X[,index.m] %*% t(X[,index.m])) / as.numeric(t(X[,index.m]) %*% X[,index.m])
-  
+  Ycheck <- W%*%y
+  EBIC[1] <- n*log(t(Ycheck)%*%Ycheck/n) + length(path)*log(n) + eta*lchoose(p,length(path))
+
   k<-1
   while (k < p){
     ## Early Stop
     if (!is.null(callback) && callback(path)) {
       break
     }
-    
+
     ## Sequential Select
     Xcheck<-W%*%X
     Ycheck<-W%*%y
     index.m<-sequential_select_whole(Xcheck,Ycheck,p,path)
     path<-c(path,index.m)
-    
+
     if (!is.null(stop) && k == stop) break
+
+    ## Update Projector
+    W <- W %*% (diag(rep(1,n)) - (X[,index.m] %*% t(X[,index.m]) %*% W)
+                / as.numeric(t(X[,index.m]) %*% W %*% X[,index.m]))
+
+    Ycheck <- W%*%y
     EBIC[k+1] <- n*log(t(Ycheck)%*%Ycheck/n) + length(path)*log(n) + eta*lchoose(p,length(path))
     # if (EBIC[k+1]>EBIC[k]) break
-    
-    ## Update Projector
-    W <- W %*% (diag(rep(1,n)) - (X[,index.m] %*% t(X[,index.m]) %*% W) 
-                / as.numeric(t(X[,index.m]) %*% W %*% X[,index.m]))
-    
+
     k<-k+1
   }
   bic <- which.min(EBIC)

@@ -47,15 +47,17 @@ library(readxl)
 ################################################################################
 ################################################################################
 set.seed(2025)
-nIterations = 100
+nIterations = 200
 q = 0.2
 ################################################################################
 ################################################################################
 ################################################################################
 ## Load Data
 data <- read_csv("ADNI_sMRI_Level5.csv") 
-y <- as.matrix(data[, 4])
+y <- as.matrix(data[, 4]); y <- y - mean(y)
 X <- as.matrix(data[, 5:ncol(data)])
+X <- scale(X, center = TRUE,  scale = FALSE)
+X <- scale(X, center = FALSE, scale = sqrt(colSums(X^2)))[,]
 
 n = dim(X)[1]
 p = dim(X)[2]
@@ -130,8 +132,9 @@ print(m_3)
 
 methods <- c("SATLasso_StatKnock", "BY", "SplitKnockoff")
 
+freq_len <- function(g) if (g == 3) p else get(paste0("m_", g))
 for (i in 1:3) {
-  m_val <- get(paste0("m_", i))
+  m_val <- freq_len(i)
   for (method in methods) {
     assign(paste0(method, "_frequency_", i), numeric(m_val))
   }
@@ -178,6 +181,7 @@ for (i in 1:nIterations) {
         freq <- get(freq_name)
         sel <- get(sel_name)
         
+        if (length(sel)) stopifnot(all(sel >= 1), all(sel <= freq_len(g)))
         freq[sel] <- freq[sel] + 1
         
         assign(freq_name, freq)

@@ -96,7 +96,7 @@ StatKnock <- function(X, y, D, L = 100, q = 0.1,
 
   S_hat <- rep(0, 2*m)
   if(cv == TRUE){
-    cv.fit = cv.glmnet(x = X_aug, y = y_star, family = "gaussian", intercept = F, alpha = 1, nfolds = cvfolds, standardize = T)
+    cv.fit = cv.glmnet(x = X_aug, y = y_star, family = "gaussian", intercept = F, alpha = 1, nfolds = cvfolds, standardize = F)
     if (lambda_cr == "min") {
       best_lambda = cv.fit$lambda.min
     } else {
@@ -109,11 +109,11 @@ StatKnock <- function(X, y, D, L = 100, q = 0.1,
   for(i in 1:L){
     index <- sample((1:n), floor(n/2), replace = F)
     
-    fit1 = glmnet(x = X_aug[index, ], y = y_star[index], family = "gaussian", intercept = F, alpha = 1, lambda = best_lambda, standardize = T)
+    fit1 = glmnet(x = X_aug[index, ], y = y_star[index], family = "gaussian", intercept = F, alpha = 1, lambda = best_lambda, standardize = F)
     bhat1 <- as.vector(stats::coef(fit1)[-1])
     S_index1 <- which(bhat1!=0)
 
-    fit2 = glmnet(x = X_aug[-index, ],y = y_star[-index], family = "gaussian", intercept = F, alpha = 1, lambda = best_lambda, standardize = T)
+    fit2 = glmnet(x = X_aug[-index, ],y = y_star[-index], family = "gaussian", intercept = F, alpha = 1, lambda = best_lambda, standardize = F)
     bhat2 <- as.vector(stats::coef(fit2)[-1])
     S_index2 <- which(bhat2!=0)
     

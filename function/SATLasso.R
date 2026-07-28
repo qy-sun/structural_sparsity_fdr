@@ -308,7 +308,7 @@ sequential_select_whole<- function(X, y, p, exist_path)
   non_zero_index <-c()
   original_indices <- setdiff(1:ncol(X), exist_path)
   X_new = X[, original_indices]
-  model_beta <- glmnet(X_new, y, alpha = 1)$beta
+  model_beta <- glmnet(X_new, y, alpha = 1, standardize = FALSE, intercept = FALSE)$beta
   for (i in 1:dim(model_beta)[2]) {
     current_beta <- model_beta[, i]
     if (any(current_beta != 0)) {

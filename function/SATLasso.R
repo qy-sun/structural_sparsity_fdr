@@ -99,13 +99,13 @@ SATLasso <- function(X,y,D, alpha_grid = 10^seq(-3, 0, length.out = 30),
       cv_fit <- cv.glmnet(X_star_train, y_star_train,
                           family = "gaussian", alpha = 1,
                           nfolds = cv_lambda_folds,
-                          standardize = FALSE,
+                          standardize = TRUE,
                           intercept = FALSE)
       best_lambda <- cv_fit$lambda.min
       final_fit <- glmnet(X_star_train, y_star_train,
                           family = "gaussian", alpha = 1,
                           lambda = best_lambda,
-                          standardize = FALSE,
+                          standardize = TRUE,
                           intercept = FALSE)
       gamma_hat <- as.vector(final_fit$beta)
       
@@ -308,7 +308,7 @@ sequential_select_whole<- function(X, y, p, exist_path)
   non_zero_index <-c()
   original_indices <- setdiff(1:ncol(X), exist_path)
   X_new = X[, original_indices]
-  model_beta <- glmnet(X_new, y, alpha = 1, standardize = FALSE, intercept = FALSE)$beta
+  model_beta <- glmnet(X_new, y, alpha = 1, standardize = TRUE, intercept = FALSE)$beta
   for (i in 1:dim(model_beta)[2]) {
     current_beta <- model_beta[, i]
     if (any(current_beta != 0)) {

@@ -103,7 +103,7 @@ StatKnock <- function(X, y, D, L = 100, q = 0.1,
       best_lambda = cv.fit$lambda.1se
     }
   } else {
-    best_lambda = sqrt(log(2*m)/n)
+    best_lambda = sqrt(log(2*m)/n) / sqrt(n)
   }
   
   for(i in 1:L){
@@ -130,7 +130,7 @@ StatKnock <- function(X, y, D, L = 100, q = 0.1,
   W <- S_hat[1:m]-S_hat[(m+1):(2*m)]
   
   # find the knockoff threshold T
-  t = sort(c(0, abs(W)))
+  t = sort(unique(abs(W)[abs(W) > 0]))
   ratio = numeric(length(t))
   
   for (j in seq_along(t)) {
@@ -144,7 +144,7 @@ StatKnock <- function(X, y, D, L = 100, q = 0.1,
   }
   
   # find the knockoff_plus threshold T_plus
-  t_plus = sort(c(0, abs(W)))
+  t_plus = sort(unique(abs(W)[abs(W) > 0]))
   ratio_plus = numeric(length(t_plus))
   
   for (j in seq_along(t_plus)) {

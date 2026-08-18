@@ -19,7 +19,7 @@ library(glmpath)
 SATLasso <- function(X,y,D, alpha_grid = 10^seq(-1, 1, length.out = 10),
                      cv_alpha_folds = 5,
                      cv_lambda_folds = 5,
-                     stop = NULL, signal_ind = NULL, eta0 = 2.1){
+                     stop = NULL, signal_ind = NULL, eta0 = 2.1, gbic = TRUE){
   n <- nrow(X)
   p <- ncol(X)
   m <- nrow(D)
@@ -27,7 +27,7 @@ SATLasso <- function(X,y,D, alpha_grid = 10^seq(-1, 1, length.out = 10),
   r <- qrD$rank
   
   if (r == m){
-    final_res <- STLasso(X, y, D, stop = stop, signal_ind = signal_ind, eta0 = eta0)
+    final_res <- STLasso(X, y, D, stop = stop, signal_ind = signal_ind, eta0 = eta0, gbic = gbic)
     return(final_res)
   }
   
@@ -124,7 +124,8 @@ SATLasso <- function(X,y,D, alpha_grid = 10^seq(-1, 1, length.out = 10),
                               alpha = best_alpha,
                               stop = stop,
                               signal_ind = signal_ind,
-                              eta0 = eta0)
+                              eta0 = eta0,
+                              gbic = gbic)
   return(final_res)
 }
 ###############################################################################
@@ -132,7 +133,7 @@ SATLasso <- function(X,y,D, alpha_grid = 10^seq(-1, 1, length.out = 10),
 ###############################################################################
 ### Helper functions
 ## (1) STLasso
-STLasso <- function(X,y,D, X_N_option = 1, proj = TRUE, stop = NULL, signal_ind = NULL, eta0 = 2.1){
+STLasso <- function(X,y,D, X_N_option = 1, proj = TRUE, stop = NULL, signal_ind = NULL, eta0 = 2.1, gbic = TRUE){
   y <- matrix(y, ncol = 1)
   n <- dim(X)[1]
   p <- dim(X)[2]
@@ -194,14 +195,14 @@ STLasso <- function(X,y,D, X_N_option = 1, proj = TRUE, stop = NULL, signal_ind 
     }
   }
   
-  final_res <- SLasso(X_star, y_star, stop = stop, callback = cb, n_eff = n_eff, eta0 = eta0)
+  final_res <- SLasso(X_star, y_star, stop = stop, callback = cb, n_eff = n_eff, eta0 = eta0, gbic = gbic)
   return(final_res)
 }
 ###############################################################################
 ###############################################################################
 ###############################################################################
 ## (2) SATLasso_alpha (fix alpha)
-SATLasso_alpha <- function(X,y,D, alpha = 0.1, stop = NULL, signal_ind = NULL, eta0 = 2.1){
+SATLasso_alpha <- function(X,y,D, alpha = 0.1, stop = NULL, signal_ind = NULL, eta0 = 2.1, gbic = TRUE){
   y <- matrix(y, ncol = 1)
   n <- dim(X)[1]
   p <- dim(X)[2]
@@ -211,7 +212,7 @@ SATLasso_alpha <- function(X,y,D, alpha = 0.1, stop = NULL, signal_ind = NULL, e
   n_eff <- n - p + r
   
   if (r == m){
-    final_res <- STLasso(X, y, D, stop = stop, signal_ind = signal_ind, eta0 = eta0)
+    final_res <- STLasso(X, y, D, stop = stop, signal_ind = signal_ind, eta0 = eta0, gbic = gbic)
     return(final_res)
   }
   
@@ -252,19 +253,19 @@ SATLasso_alpha <- function(X,y,D, alpha = 0.1, stop = NULL, signal_ind = NULL, e
     }
   }
   
-  final_res <- SLasso(X_star, y_star, stop = stop, callback = cb, n_eff = n_eff, eta0 = eta0)
+  final_res <- SLasso(X_star, y_star, stop = stop, callback = cb, n_eff = n_eff, eta0 = eta0, gbic = gbic)
   return(final_res)
 }
 ###############################################################################
 ###############################################################################
 ###############################################################################
 ## (3) SLasso (Luo & Chen, 2014)
-SLasso <- function(X,y, stop = NULL, callback = NULL, n_eff = NULL, eta0 = 2.1){
+SLasso <- function(X,y, stop = NULL, callback = NULL, n_eff = NULL, eta0 = 2.1, gbic = TRUE){
   n<-nrow(X)
   p<-ncol(X)
   if (is.null(n_eff)) n_eff <- n
-  stopifnot(n_eff > 1)
-  eta<- eta0 -log(n_eff)/log(p)
+  stopifnot(!gbic || n_eff > 1)
+  eta<- if (gbic) eta0 -log(n_eff)/log(p) else NA_real_
   path<-setdiff(1:p,1:p)
   EBIC<-NULL
   
@@ -273,7 +274,7 @@ SLasso <- function(X,y, stop = NULL, callback = NULL, n_eff = NULL, eta0 = 2.1){
   path    <- c(path,index.m)
   W <- diag(rep(1,n)) - (X[,index.m] %*% t(X[,index.m])) / as.numeric(t(X[,index.m]) %*% X[,index.m])
   Ycheck <- W%*%y
-  EBIC[1] <- n_eff*log(t(Ycheck)%*%Ycheck/n_eff) + length(path)*log(n_eff) + eta*lchoose(p,length(path))
+  if (gbic) EBIC[1] <- n_eff*log(t(Ycheck)%*%Ycheck/n_eff) + length(path)*log(n_eff) + eta*lchoose(p,length(path))
 
   k<-1
   while (k < p){
@@ -295,14 +296,13 @@ SLasso <- function(X,y, stop = NULL, callback = NULL, n_eff = NULL, eta0 = 2.1){
                 / as.numeric(t(X[,index.m]) %*% W %*% X[,index.m]))
 
     Ycheck <- W%*%y
-    EBIC[k+1] <- n_eff*log(t(Ycheck)%*%Ycheck/n_eff) + length(path)*log(n_eff) + eta*lchoose(p,length(path))
+    if (gbic) EBIC[k+1] <- n_eff*log(t(Ycheck)%*%Ycheck/n_eff) + length(path)*log(n_eff) + eta*lchoose(p,length(path))
     # if (EBIC[k+1]>EBIC[k]) break
 
     k<-k+1
   }
-  bic <- which.min(EBIC)
-  em  <- path[1:bic]
-  
+  em <- if (gbic) path[1:which.min(EBIC)] else NA_integer_
+
   return(list(es=path,
               em=em,
               bic=EBIC))

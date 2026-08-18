@@ -24,7 +24,8 @@ SATLasso_StatKnock <- function(X, y, D,
                                L = 100, q = 0.1,
                                cv = TRUE, cvfolds = 10,
                                lambda_cr = c("min", "1se"),
-                               knockoff_args = list()) {
+                               knockoff_args = list(),
+                               gbic = FALSE) {
   lambda_cr <- match.arg(lambda_cr)
   y <- matrix(y, ncol = 1)
   n <- nrow(X); p <- ncol(X); m <- nrow(D)
@@ -54,62 +55,61 @@ SATLasso_StatKnock <- function(X, y, D,
   ## 2) Screening on (X1, y1)
   #############################################
   
-  # ## Conditions to ensure that StatKnock works
-  # max_gamma = floor(n2/2)
-  # max_beta  = n2 - 1
-  
   # (i) S_gamma: screening gamma via SATLasso
-  S_gamma <- SATLasso(X1, y1, D, stop = floor(n2/log(n2)))$em
-  
   # (ii) S_beta: recycling beta based on S_gamma (vertices connected to the screened edges)
-  S_beta  <- which(colSums(abs(D[S_gamma, , drop = FALSE]) != 0) > 0)
-  
+  if (gbic) {
+    S_gamma <- SATLasso(X1, y1, D, stop = floor(n2/log(n2)), gbic = TRUE)$em
+    S_beta  <- which(colSums(abs(D[S_gamma, , drop = FALSE]) != 0) > 0)
+  } else {
+    path      <- SATLasso(X1, y1, D, stop = floor(n2 / log(n2)), gbic = FALSE)$es
+    max_gamma <- floor(n2 / 2)
+    max_beta  <- n2 - 1
+    S_gamma <- integer(0); S_beta <- integer(0)
+    for (g in path) {
+      cand_g <- c(S_gamma, g)
+      if (length(cand_g) > max_gamma) break
+      cand_b <- which(colSums(abs(D[cand_g, , drop = FALSE]) != 0) > 0)
+      if (length(cand_b) > max_beta) break
+      S_gamma <- cand_g; S_beta <- cand_b
+    }
+  }
+
   ## (v) Form screened D matrix
   D_scr <- D[S_gamma, S_beta]
-  
-  # path      <- SATLasso(X1, y1, D, stop = floor(n2 / log(n2)))$es
-  # max_gamma <- floor(n2 / 2)
-  # max_beta  <- n2 - 1
-  # S_gamma <- integer(0); S_beta <- integer(0)
-  # for (g in path) {
-  #   cand_g <- c(S_gamma, g)
-  #   if (length(cand_g) > max_gamma) break
-  #   cand_b <- which(colSums(abs(D[cand_g, , drop = FALSE]) != 0) > 0)
-  #   if (length(cand_b) > max_beta) break
-  #   S_gamma <- cand_g; S_beta <- cand_b
-  # }
-  
+
   #############################################
   ## 3) Selection on (X2, y2)
   #############################################
-  if (is.null(dim(D_scr))) {
-    Sel <- integer(0)
-    Sel_plus <- integer(0)
+  if (gbic) {
+    if (is.null(dim(D_scr))) {
+      Sel <- integer(0)
+      Sel_plus <- integer(0)
+    } else {
+      stat_fit <- StatKnock(X2[, S_beta, drop = FALSE],
+                            y2, D = D_scr,
+                            L = L, q = q,
+                            cv = cv, cvfolds = cvfolds,
+                            lambda_cr = lambda_cr,
+                            knockoff_args = knockoff_args)
+      Sel      <- S_gamma[stat_fit$S]
+      Sel_plus <- S_gamma[stat_fit$S_plus]
+    }
   } else {
-    stat_fit <- StatKnock(X2[, S_beta, drop = FALSE],
-                          y2, D = D_scr,
-                          L = L, q = q,
-                          cv = cv, cvfolds = cvfolds,
-                          lambda_cr = lambda_cr,
-                          knockoff_args = knockoff_args)
-    Sel      <- S_gamma[stat_fit$S]
-    Sel_plus <- S_gamma[stat_fit$S_plus]
+    Sel <- integer(0); Sel_plus <- integer(0)
+    while (length(S_gamma) >= 2) {
+      out <- tryCatch({
+        D_scr <- D[S_gamma, S_beta, drop = FALSE]
+        stat_fit <- StatKnock(X2[, S_beta, drop = FALSE], y2, D = D_scr,
+                              L = L, q = q, cv = cv, cvfolds = cvfolds,
+                              lambda_cr = lambda_cr,
+                              knockoff_args = knockoff_args)
+        list(S = S_gamma[stat_fit$S], S_plus = S_gamma[stat_fit$S_plus])
+      }, error = function(e) NULL)
+      if (!is.null(out)) { Sel <- out$S; Sel_plus <- out$S_plus; break }
+      S_gamma <- S_gamma[-length(S_gamma)]
+      S_beta  <- which(colSums(abs(D[S_gamma, , drop = FALSE]) != 0) > 0)
+    }
   }
-  
-  # Sel <- integer(0); Sel_plus <- integer(0)
-  # while (length(S_gamma) >= 2) {
-  #   out <- tryCatch({
-  #     D_scr <- D[S_gamma, S_beta, drop = FALSE]
-  #     stat_fit <- StatKnock(X2[, S_beta, drop = FALSE], y2, D = D_scr,
-  #                           L = L, q = q, cv = cv, cvfolds = cvfolds,
-  #                           lambda_cr = lambda_cr, knockoff_method = knockoff_method,
-  #                           knockoff_args = knockoff_args)
-  #     list(S = S_gamma[stat_fit$S], S_plus = S_gamma[stat_fit$S_plus])
-  #   }, error = function(e) NULL)
-  #   if (!is.null(out)) { Sel <- out$S; Sel_plus <- out$S_plus; break }
-  #   S_gamma <- S_gamma[-length(S_gamma)]
-  #   S_beta  <- which(colSums(abs(D[S_gamma, , drop = FALSE]) != 0) > 0)
-  # }
-  
+
   return(list(S=Sel, S_plus=Sel_plus))
 }

@@ -31,7 +31,7 @@ DS_D <- function(X, y, D, num_split = 50, q = 0.1){
     
     ### run GenLasso on the first half of the data
     GenLasso_fit <- genlasso(y[sample_index1], X[sample_index1, ], D)
-    lambda_GenLasso = sqrt(length(sample_index1)*log(p))
+    lambda_GenLasso = sqrt(length(sample_index1)*log(m))
     beta1 <- coef(GenLasso_fit, lambda=lambda_GenLasso)$beta
     gamma1 <- D %*% beta1
     nonzero_index <- which(beta1 != 0)

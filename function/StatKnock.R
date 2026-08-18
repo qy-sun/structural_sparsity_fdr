@@ -103,7 +103,13 @@ StatKnock <- function(X, y, D, L = 100, q = 0.1,
       best_lambda = cv.fit$lambda.1se
     }
   } else {
-    best_lambda = sqrt(log(2*m)/n) / sqrt(n)
+    qrX <- qr(X)
+    sigma_hat <- if (n > qrX$rank) {
+      sqrt(sum(qr.resid(qrX, y)^2) / (n - qrX$rank))
+    } else {
+      stats::mad(as.vector(y_star))
+    }
+    best_lambda = sigma_hat * sqrt(log(2*m)/n) / sqrt(n)
   }
   
   for(i in 1:L){

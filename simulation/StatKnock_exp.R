@@ -79,7 +79,7 @@ for (rho in rho_values) {
       Beta0 = Chain_PiecewiseConstant(p, p1, m1, A, min_interval = 3, edge_buffer = 3)
       X <- matrix(rnorm(n * p), n) %*% chol(Sigma)
       y <- X %*% Beta0 + rnorm(n, sd = 1)
-      signal_ind = which(abs(D %*% Beta0) > 1e-10)
+      signal_ind = which(abs(D %*% Beta0) > 1e-4)
       
       ### StatKnock
       StatKnock_Fit <- StatKnock(X = X, y = y, D = D, q = q)
@@ -179,7 +179,7 @@ for (rho in rho_values) {
       Beta0 = Chain_PiecewiseConstant(p, p1, m1, A, min_interval = 3, edge_buffer = 3)
       X <- matrix(rnorm(n * p), n) %*% chol(Sigma)
       y <- X %*% Beta0 + rnorm(n, sd = 1)
-      signal_ind = which(abs(D %*% Beta0) > 1e-10)
+      signal_ind = which(abs(D %*% Beta0) > 1e-4)
       
       ### StatKnock
       StatKnock_Fit <- StatKnock(X = X, y = y, D = D, q = q)
@@ -281,7 +281,7 @@ for (rho in rho_values) {
       Beta0 = Chain_PiecewiseConstant(p, p1, m1, A, min_interval = 3, edge_buffer = 3)
       X <- matrix(rnorm(n * p), n) %*% chol(Sigma)
       y <- X %*% Beta0 + rnorm(n, sd = 1)
-      signal_ind = which(abs(D %*% Beta0) > 1e-10)
+      signal_ind = which(abs(D %*% Beta0) > 1e-4)
       
       ### StatKnock
       StatKnock_Fit <- StatKnock(X = X, y = y, D = D, q = q)

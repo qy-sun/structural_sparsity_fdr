@@ -64,7 +64,7 @@ for (iter in 1:nIterations) {
   Beta0 = Chain_PiecewiseConstant(p,p1,m1,A,min_interval = 5, edge_buffer = 5)
   X <- matrix(rnorm(n*p),n) %*% chol(Sigma)
   y <- X %*% Beta0 + rnorm(n, sd = 1)
-  signal_ind = which(abs(D%*%Beta0) > 1e-10)
+  signal_ind = which(abs(D%*%Beta0) > 1e-4)
   print(length(signal_ind))
   
   ## SATLasso
@@ -84,7 +84,7 @@ for (iter in 1:nIterations) {
   
   ## GenLasso
   GenLasso_Fit <- genlasso(y, X, D)
-  gamma = D %*% coef(GenLasso_Fit, lambda=sqrt(n*log(p)))$beta
+  gamma = D %*% coef(GenLasso_Fit, lambda=sqrt(n*log(m)))$beta
   GenLasso_Sel <- order(-abs(gamma))
   for (j3 in length(signal_ind):m) {
     if (length(intersect(GenLasso_Sel[1:j3],signal_ind))==length(signal_ind)){
@@ -139,7 +139,7 @@ for (iter in 1:nIterations) {
   Beta0 = Lattice_PiecewiseConstant(s, t, p1, m1, A)
   X <- matrix(rnorm(n*p),n) %*% chol(Sigma)
   y <- X %*% Beta0 + rnorm(n, sd = 1)
-  signal_ind = which(abs(D%*%Beta0) > 1e-10)
+  signal_ind = which(abs(D%*%Beta0) > 1e-4)
   
   ## SATLasso
   SATLasso_Fit <- SATLasso(X, y, D, signal_ind = signal_ind)
@@ -158,7 +158,7 @@ for (iter in 1:nIterations) {
   
   ## GenLasso
   GenLasso_Fit <- genlasso(y, X, D)
-  gamma = D %*% coef(GenLasso_Fit, lambda=sqrt(n*log(p)))$beta
+  gamma = D %*% coef(GenLasso_Fit, lambda=sqrt(n*log(m)))$beta
   GenLasso_Sel <- order(-abs(gamma))
   for (j3 in length(signal_ind):m) {
     if (length(intersect(GenLasso_Sel[1:j3],signal_ind))==length(signal_ind)){
@@ -214,9 +214,9 @@ fdp_power_list_1D_SFL = sapply(1:nIterations, function(it) {
   Beta0 = Chain_PiecewiseConstant(p,p1,m1,A, min_interval = 3, edge_buffer = 3)
   X <- matrix(rnorm(n*p),n) %*% chol(Sigma)
   y <- X %*% Beta0 + rnorm(n, sd = 1)
-  signal_ind_1 = which(abs(D_1%*%Beta0) > 1e-10)
-  signal_ind_2 = which(abs(D_2%*%Beta0) > 1e-10)
-  signal_ind_3 = which(abs(D_3%*%Beta0) > 1e-10)
+  signal_ind_1 = which(abs(D_1%*%Beta0) > 1e-4)
+  signal_ind_2 = which(abs(D_2%*%Beta0) > 1e-4)
+  signal_ind_3 = which(abs(D_3%*%Beta0) > 1e-4)
   
   ### SATLasso
   SATLasso_Fit_1 <- SATLasso(X, y, D_1, stop = floor(n/log(n)))
@@ -242,16 +242,16 @@ fdp_power_list_1D_SFL = sapply(1:nIterations, function(it) {
   
   #### GLasso
   GLasso_Fit_1 <- genlasso(y, X, D_1)
-  gamma_genLasso_1 = D_1 %*% coef(GLasso_Fit_1, lambda=sqrt(n*log(p)))$beta
-  GLasso_Sel_1 <- which(gamma_genLasso_1!=0)
+  gamma_genLasso_1 = D_1 %*% coef(GLasso_Fit_1, lambda=sqrt(n*log(m_1)))$beta
+  GLasso_Sel_1 <- which(abs(gamma_genLasso_1) > 1e-4)
   fdp_power3_1 = fdp_power_ssr(selected_index=GLasso_Sel_1,signal_index=signal_ind_1)
   GLasso_Fit_2 <- genlasso(y, X, D_2)
-  gamma_genLasso_2 = D_2 %*% coef(GLasso_Fit_2, lambda=sqrt(n*log(p)))$beta
-  GLasso_Sel_2 <- which(gamma_genLasso_2!=0)
+  gamma_genLasso_2 = D_2 %*% coef(GLasso_Fit_2, lambda=sqrt(n*log(m_2)))$beta
+  GLasso_Sel_2 <- which(abs(gamma_genLasso_2) > 1e-4)
   fdp_power3_2 = fdp_power_ssr(selected_index=GLasso_Sel_2,signal_index=signal_ind_2)
   GLasso_Fit_3 <- genlasso(y, X, D_3)
-  gamma_genLasso_3 = D_3 %*% coef(GLasso_Fit_3, lambda=sqrt(n*log(p)))$beta
-  GLasso_Sel_3 <- which(gamma_genLasso_3!=0)
+  gamma_genLasso_3 = D_3 %*% coef(GLasso_Fit_3, lambda=sqrt(n*log(m_3)))$beta
+  GLasso_Sel_3 <- which(abs(gamma_genLasso_3) > 1e-4)
   fdp_power3_3 = fdp_power_ssr(selected_index=GLasso_Sel_3,signal_index=signal_ind_3)
   
   ### SplitLasso

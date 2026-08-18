@@ -54,15 +54,15 @@ Gamma_list_ChainConstant = sapply(1:nIterations, function(it) {
   Beta0 = Chain_PiecewiseConstant(p,p1,m1,A)
   X <- matrix(rnorm(n*p),n) %*% chol(Sigma)
   y <- X %*% Beta0 + rnorm(n, sd = 1)
-  signal_ind = which(abs(D%*%Beta0) > 1e-10)
+  signal_ind = which(abs(D%*%Beta0) > 1e-4)
   
   ### TLasso (1)
   TLasso_fit1 <- TLasso(X, y, D, X_N_option = 1)
   gamma_TLasso1 <- TLasso_fit1$gamma
   l2_11 = gamma_estimation_error(gamma_TLasso1, D %*% Beta0)$l2_norm
   linf_11 = gamma_estimation_error(gamma_TLasso1, D %*% Beta0)$linf_norm
-  TP_11 = length(intersect(which(gamma_TLasso1!=0),signal_ind))
-  MS_11 = length(which(gamma_TLasso1!=0))
+  TP_11 = length(intersect(which(abs(gamma_TLasso1) > 1e-4),signal_ind))
+  MS_11 = length(which(abs(gamma_TLasso1) > 1e-4))
   print(l2_11)
   print(linf_11)
   print(TP_11)
@@ -73,8 +73,8 @@ Gamma_list_ChainConstant = sapply(1:nIterations, function(it) {
   gamma_TLasso2 <- TLasso_fit2$gamma
   l2_12 = gamma_estimation_error(gamma_TLasso2, D %*% Beta0)$l2_norm
   linf_12 = gamma_estimation_error(gamma_TLasso2, D %*% Beta0)$linf_norm
-  TP_12 = length(intersect(which(gamma_TLasso2!=0),signal_ind))
-  MS_12 = length(which(gamma_TLasso2!=0))
+  TP_12 = length(intersect(which(abs(gamma_TLasso2) > 1e-4),signal_ind))
+  MS_12 = length(which(abs(gamma_TLasso2) > 1e-4))
   print(l2_12)
   print(linf_12)
   print(TP_12)
@@ -85,8 +85,8 @@ Gamma_list_ChainConstant = sapply(1:nIterations, function(it) {
   gamma_TLasso3 <- TLasso_fit3$gamma
   l2_13 = gamma_estimation_error(gamma_TLasso3, D %*% Beta0)$l2_norm
   linf_13 = gamma_estimation_error(gamma_TLasso3, D %*% Beta0)$linf_norm
-  TP_13 = length(intersect(which(gamma_TLasso3!=0),signal_ind))
-  MS_13 = length(which(gamma_TLasso3!=0))
+  TP_13 = length(intersect(which(abs(gamma_TLasso3) > 1e-4),signal_ind))
+  MS_13 = length(which(abs(gamma_TLasso3) > 1e-4))
   print(l2_13)
   print(linf_13)
   print(TP_13)
@@ -94,13 +94,13 @@ Gamma_list_ChainConstant = sapply(1:nIterations, function(it) {
   
   ### GenLasso
   GenLasso_fit <- genlasso(y, X, D)
-  lambda_GenLasso = sqrt(n*log(p))
+  lambda_GenLasso = sqrt(n*log(m))
   beta_GenLasso <- coef(GenLasso_fit, lambda=lambda_GenLasso)$beta
   gamma_GenLasso <- D %*% beta_GenLasso
   l2_2 = gamma_estimation_error(gamma_GenLasso, D %*% Beta0)$l2_norm
   linf_2 = gamma_estimation_error(gamma_GenLasso, D %*% Beta0)$linf_norm
-  TP_2 = length(intersect(which(gamma_GenLasso!=0),signal_ind))
-  MS_2 = length(which(gamma_GenLasso!=0))
+  TP_2 = length(intersect(which(abs(gamma_GenLasso) > 1e-4),signal_ind))
+  MS_2 = length(which(abs(gamma_GenLasso) > 1e-4))
   print(l2_2)
   print(linf_2)
   print(TP_2)
@@ -111,8 +111,8 @@ Gamma_list_ChainConstant = sapply(1:nIterations, function(it) {
   gamma_SplitLasso <- SplitLasso_fit$gammas
   l2_3 = gamma_estimation_error(gamma_SplitLasso, D %*% Beta0)$l2_norm
   linf_3 = gamma_estimation_error(gamma_SplitLasso, D %*% Beta0)$linf_norm
-  TP_3 = length(intersect(which(gamma_SplitLasso!=0),signal_ind))
-  MS_3 = length(which(gamma_SplitLasso!=0))
+  TP_3 = length(intersect(which(abs(gamma_SplitLasso) > 1e-4),signal_ind))
+  MS_3 = length(which(abs(gamma_SplitLasso) > 1e-4))
   print(l2_3)
   print(linf_3)
   print(TP_3)
@@ -146,7 +146,7 @@ Gamma_list_LatticeConstant = sapply(1:nIterations, function(it) {
   Beta0 = Lattice_PiecewiseConstant(s, t, p1, m1, A)
   X <- matrix(rnorm(n*p),n) %*% chol(Sigma)
   y <- X %*% Beta0 + rnorm(n, sd = 1)
-  signal_ind = which(abs(D%*%Beta0) > 1e-10)
+  signal_ind = which(abs(D%*%Beta0) > 1e-4)
   print(min(abs(D %*% Beta0)[signal_ind]))
   plot(D %*% Beta0)
   
@@ -155,8 +155,8 @@ Gamma_list_LatticeConstant = sapply(1:nIterations, function(it) {
   gamma_TLasso1 <- TLasso_fit1$gamma
   l2_11 = gamma_estimation_error(gamma_TLasso1, D %*% Beta0)$l2_norm
   linf_11 = gamma_estimation_error(gamma_TLasso1, D %*% Beta0)$linf_norm
-  TP_11 = length(intersect(which(gamma_TLasso1!=0),signal_ind))
-  MS_11 = length(which(gamma_TLasso1!=0))
+  TP_11 = length(intersect(which(abs(gamma_TLasso1) > 1e-4),signal_ind))
+  MS_11 = length(which(abs(gamma_TLasso1) > 1e-4))
   print(l2_11)
   print(linf_11)
   print(TP_11)
@@ -167,8 +167,8 @@ Gamma_list_LatticeConstant = sapply(1:nIterations, function(it) {
   gamma_TLasso2 <- TLasso_fit2$gamma
   l2_12 = gamma_estimation_error(gamma_TLasso2, D %*% Beta0)$l2_norm
   linf_12 = gamma_estimation_error(gamma_TLasso2, D %*% Beta0)$linf_norm
-  TP_12 = length(intersect(which(gamma_TLasso2!=0),signal_ind))
-  MS_12 = length(which(gamma_TLasso2!=0))
+  TP_12 = length(intersect(which(abs(gamma_TLasso2) > 1e-4),signal_ind))
+  MS_12 = length(which(abs(gamma_TLasso2) > 1e-4))
   print(l2_12)
   print(linf_12)
   print(TP_12)
@@ -179,8 +179,8 @@ Gamma_list_LatticeConstant = sapply(1:nIterations, function(it) {
   gamma_TLasso3 <- TLasso_fit3$gamma
   l2_13 = gamma_estimation_error(gamma_TLasso3, D %*% Beta0)$l2_norm
   linf_13 = gamma_estimation_error(gamma_TLasso3, D %*% Beta0)$linf_norm
-  TP_13 = length(intersect(which(gamma_TLasso3!=0),signal_ind))
-  MS_13 = length(which(gamma_TLasso3!=0))
+  TP_13 = length(intersect(which(abs(gamma_TLasso3) > 1e-4),signal_ind))
+  MS_13 = length(which(abs(gamma_TLasso3) > 1e-4))
   print(l2_13)
   print(linf_13)
   print(TP_13)
@@ -188,13 +188,13 @@ Gamma_list_LatticeConstant = sapply(1:nIterations, function(it) {
   
   ### GenLasso
   GenLasso_fit <- genlasso(y, X, D)
-  lambda_GenLasso = sqrt(n*log(p))
+  lambda_GenLasso = sqrt(n*log(m))
   beta_GenLasso <- coef(GenLasso_fit, lambda=lambda_GenLasso)$beta
   gamma_GenLasso <- D %*% beta_GenLasso
   l2_2 = gamma_estimation_error(gamma_GenLasso, D %*% Beta0)$l2_norm
   linf_2 = gamma_estimation_error(gamma_GenLasso, D %*% Beta0)$linf_norm
-  TP_2 = length(intersect(which(gamma_GenLasso!=0),signal_ind))
-  MS_2 = length(which(gamma_GenLasso!=0))
+  TP_2 = length(intersect(which(abs(gamma_GenLasso) > 1e-4),signal_ind))
+  MS_2 = length(which(abs(gamma_GenLasso) > 1e-4))
   print(l2_2)
   print(linf_2)
   print(TP_2)
@@ -205,8 +205,8 @@ Gamma_list_LatticeConstant = sapply(1:nIterations, function(it) {
   gamma_SplitLasso <- SplitLasso_fit$gammas
   l2_3 = gamma_estimation_error(gamma_SplitLasso, D %*% Beta0)$l2_norm
   linf_3 = gamma_estimation_error(gamma_SplitLasso, D %*% Beta0)$linf_norm
-  TP_3 = length(intersect(which(gamma_SplitLasso!=0),signal_ind))
-  MS_3 = length(which(gamma_SplitLasso!=0))
+  TP_3 = length(intersect(which(abs(gamma_SplitLasso) > 1e-4),signal_ind))
+  MS_3 = length(which(abs(gamma_SplitLasso) > 1e-4))
   print(l2_3)
   print(linf_3)
   print(TP_3)
@@ -241,7 +241,7 @@ Gamma_list_LatticeLinear = sapply(1:nIterations, function(it) {
   Beta0 = Lattice_PiecewiseConstant(s, t, p1, m1/5*4, A)
   X <- matrix(rnorm(n*p),n) %*% chol(Sigma)
   y <- X %*% Beta0 + rnorm(n, sd = 1)
-  signal_ind = which(abs(D%*%Beta0) > 1e-10)
+  signal_ind = which(abs(D%*%Beta0) > 1e-4)
   print(min(abs(D %*% Beta0)[signal_ind]))
   plot(D %*% Beta0)
   
@@ -250,8 +250,8 @@ Gamma_list_LatticeLinear = sapply(1:nIterations, function(it) {
   gamma_TLasso1 <- TLasso_fit1$gamma
   l2_11 = gamma_estimation_error(gamma_TLasso1, D %*% Beta0)$l2_norm
   linf_11 = gamma_estimation_error(gamma_TLasso1, D %*% Beta0)$linf_norm
-  TP_11 = length(intersect(which(gamma_TLasso1!=0),signal_ind))
-  MS_11 = length(which(gamma_TLasso1!=0))
+  TP_11 = length(intersect(which(abs(gamma_TLasso1) > 1e-4),signal_ind))
+  MS_11 = length(which(abs(gamma_TLasso1) > 1e-4))
   print(l2_11)
   print(linf_11)
   print(TP_11)
@@ -262,8 +262,8 @@ Gamma_list_LatticeLinear = sapply(1:nIterations, function(it) {
   gamma_TLasso2 <- TLasso_fit2$gamma
   l2_12 = gamma_estimation_error(gamma_TLasso2, D %*% Beta0)$l2_norm
   linf_12 = gamma_estimation_error(gamma_TLasso2, D %*% Beta0)$linf_norm
-  TP_12 = length(intersect(which(gamma_TLasso2!=0),signal_ind))
-  MS_12 = length(which(gamma_TLasso2!=0))
+  TP_12 = length(intersect(which(abs(gamma_TLasso2) > 1e-4),signal_ind))
+  MS_12 = length(which(abs(gamma_TLasso2) > 1e-4))
   print(l2_12)
   print(linf_12)
   print(TP_12)
@@ -274,8 +274,8 @@ Gamma_list_LatticeLinear = sapply(1:nIterations, function(it) {
   gamma_TLasso3 <- TLasso_fit3$gamma
   l2_13 = gamma_estimation_error(gamma_TLasso3, D %*% Beta0)$l2_norm
   linf_13 = gamma_estimation_error(gamma_TLasso3, D %*% Beta0)$linf_norm
-  TP_13 = length(intersect(which(gamma_TLasso3!=0),signal_ind))
-  MS_13 = length(which(gamma_TLasso3!=0))
+  TP_13 = length(intersect(which(abs(gamma_TLasso3) > 1e-4),signal_ind))
+  MS_13 = length(which(abs(gamma_TLasso3) > 1e-4))
   print(l2_13)
   print(linf_13)
   print(TP_13)
@@ -283,13 +283,13 @@ Gamma_list_LatticeLinear = sapply(1:nIterations, function(it) {
   
   ### GenLasso
   GenLasso_fit <- genlasso(y, X, D)
-  lambda_GenLasso = sqrt(n*log(p))
+  lambda_GenLasso = sqrt(n*log(m))
   beta_GenLasso <- coef(GenLasso_fit, lambda=lambda_GenLasso)$beta
   gamma_GenLasso <- D %*% beta_GenLasso
   l2_2 = gamma_estimation_error(gamma_GenLasso, D %*% Beta0)$l2_norm
   linf_2 = gamma_estimation_error(gamma_GenLasso, D %*% Beta0)$linf_norm
-  TP_2 = length(intersect(which(gamma_GenLasso!=0),signal_ind))
-  MS_2 = length(which(gamma_GenLasso!=0))
+  TP_2 = length(intersect(which(abs(gamma_GenLasso) > 1e-4),signal_ind))
+  MS_2 = length(which(abs(gamma_GenLasso) > 1e-4))
   print(l2_2)
   print(linf_2)
   print(TP_2)
@@ -300,8 +300,8 @@ Gamma_list_LatticeLinear = sapply(1:nIterations, function(it) {
   gamma_SplitLasso <- SplitLasso_fit$gammas
   l2_3 = gamma_estimation_error(gamma_SplitLasso, D %*% Beta0)$l2_norm
   linf_3 = gamma_estimation_error(gamma_SplitLasso, D %*% Beta0)$linf_norm
-  TP_3 = length(intersect(which(gamma_SplitLasso!=0),signal_ind))
-  MS_3 = length(which(gamma_SplitLasso!=0))
+  TP_3 = length(intersect(which(abs(gamma_SplitLasso) > 1e-4),signal_ind))
+  MS_3 = length(which(abs(gamma_SplitLasso) > 1e-4))
   print(l2_3)
   print(linf_3)
   print(TP_3)
@@ -338,17 +338,17 @@ Gamma_list_1D_SFL = sapply(1:nIterations, function(it) {
   Beta0 = Chain_PiecewiseConstant(p,p1,m1,A)
   X <- matrix(rnorm(n*p),n) %*% chol(Sigma)
   y <- X %*% Beta0 + rnorm(n, sd = 1)
-  signal_ind_1 = which(abs(D_1%*%Beta0) > 1e-10)
-  signal_ind_2 = which(abs(D_2%*%Beta0) > 1e-10)
-  signal_ind_3 = which(abs(D_3%*%Beta0) > 1e-10)
+  signal_ind_1 = which(abs(D_1%*%Beta0) > 1e-4)
+  signal_ind_2 = which(abs(D_2%*%Beta0) > 1e-4)
+  signal_ind_3 = which(abs(D_3%*%Beta0) > 1e-4)
   
   ### TLasso
   TLasso_fit1 <- TLasso(X, y, D_1)
   gamma_TLasso1 <- TLasso_fit1$gamma
   l2_11 = gamma_estimation_error(gamma_TLasso1, D_1 %*% Beta0)$l2_norm
   linf_11 = gamma_estimation_error(gamma_TLasso1, D_1 %*% Beta0)$linf_norm
-  TP_11 = length(intersect(which(gamma_TLasso1!=0),signal_ind_1))
-  MS_11 = length(which(gamma_TLasso1!=0))
+  TP_11 = length(intersect(which(abs(gamma_TLasso1) > 1e-4),signal_ind_1))
+  MS_11 = length(which(abs(gamma_TLasso1) > 1e-4))
   print(l2_11)
   print(linf_11)
   print(TP_11)
@@ -357,8 +357,8 @@ Gamma_list_1D_SFL = sapply(1:nIterations, function(it) {
   gamma_TLasso2 <- TLasso_fit2$gamma
   l2_12 = gamma_estimation_error(gamma_TLasso2, D_2 %*% Beta0)$l2_norm
   linf_12 = gamma_estimation_error(gamma_TLasso2, D_2 %*% Beta0)$linf_norm
-  TP_12 = length(intersect(which(gamma_TLasso2!=0),signal_ind_2))
-  MS_12 = length(which(gamma_TLasso2!=0))
+  TP_12 = length(intersect(which(abs(gamma_TLasso2) > 1e-4),signal_ind_2))
+  MS_12 = length(which(abs(gamma_TLasso2) > 1e-4))
   print(l2_12)
   print(linf_12)
   print(TP_12)
@@ -367,8 +367,8 @@ Gamma_list_1D_SFL = sapply(1:nIterations, function(it) {
   gamma_TLasso3 <- TLasso_fit3$gamma
   l2_13 = gamma_estimation_error(gamma_TLasso3, D_3 %*% Beta0)$l2_norm
   linf_13 = gamma_estimation_error(gamma_TLasso3, D_3 %*% Beta0)$linf_norm
-  TP_13 = length(intersect(which(gamma_TLasso3!=0),signal_ind_3))
-  MS_13 = length(which(gamma_TLasso3!=0))
+  TP_13 = length(intersect(which(abs(gamma_TLasso3) > 1e-4),signal_ind_3))
+  MS_13 = length(which(abs(gamma_TLasso3) > 1e-4))
   print(l2_13)
   print(linf_13)
   print(TP_13)
@@ -376,37 +376,37 @@ Gamma_list_1D_SFL = sapply(1:nIterations, function(it) {
   
   ### GenLasso
   GenLasso_fit1 <- genlasso(y, X, D_1)
-  lambda_GenLasso = sqrt(n*log(p))
+  lambda_GenLasso = sqrt(n*log(m_1))
   beta_GenLasso1 <- coef(GenLasso_fit1, lambda=lambda_GenLasso)$beta
   gamma_GenLasso1 <- D_1 %*% beta_GenLasso1
   l2_21 = gamma_estimation_error(gamma_GenLasso1, D_1 %*% Beta0)$l2_norm
   linf_21 = gamma_estimation_error(gamma_GenLasso1, D_1 %*% Beta0)$linf_norm
-  TP_21 = length(intersect(which(gamma_GenLasso1!=0),signal_ind_1))
-  MS_21 = length(which(gamma_GenLasso1!=0))
+  TP_21 = length(intersect(which(abs(gamma_GenLasso1) > 1e-4),signal_ind_1))
+  MS_21 = length(which(abs(gamma_GenLasso1) > 1e-4))
   print(l2_21)
   print(linf_21)
   print(TP_21)
   print(MS_21)
   GenLasso_fit2 <- genlasso(y, X, D_2)
-  lambda_GenLasso = sqrt(n*log(p))
+  lambda_GenLasso = sqrt(n*log(m_2))
   beta_GenLasso2 <- coef(GenLasso_fit2, lambda=lambda_GenLasso)$beta
   gamma_GenLasso2 <- D_2 %*% beta_GenLasso2
   l2_22 = gamma_estimation_error(gamma_GenLasso2, D_2 %*% Beta0)$l2_norm
   linf_22 = gamma_estimation_error(gamma_GenLasso2, D_2 %*% Beta0)$linf_norm
-  TP_22 = length(intersect(which(gamma_GenLasso2!=0),signal_ind_2))
-  MS_22 = length(which(gamma_GenLasso2!=0))
+  TP_22 = length(intersect(which(abs(gamma_GenLasso2) > 1e-4),signal_ind_2))
+  MS_22 = length(which(abs(gamma_GenLasso2) > 1e-4))
   print(l2_22)
   print(linf_22)
   print(TP_22)
   print(MS_22)
   GenLasso_fit3 <- genlasso(y, X, D_3)
-  lambda_GenLasso = sqrt(n*log(p))
+  lambda_GenLasso = sqrt(n*log(m_3))
   beta_GenLasso3 <- coef(GenLasso_fit3, lambda=lambda_GenLasso)$beta
   gamma_GenLasso3 <- D_3 %*% beta_GenLasso3
   l2_23 = gamma_estimation_error(gamma_GenLasso3, D_3 %*% Beta0)$l2_norm
   linf_23 = gamma_estimation_error(gamma_GenLasso3, D_3 %*% Beta0)$linf_norm
-  TP_23 = length(intersect(which(gamma_GenLasso3!=0),signal_ind_3))
-  MS_23 = length(which(gamma_GenLasso3!=0))
+  TP_23 = length(intersect(which(abs(gamma_GenLasso3) > 1e-4),signal_ind_3))
+  MS_23 = length(which(abs(gamma_GenLasso3) > 1e-4))
   print(l2_23)
   print(linf_23)
   print(TP_23)
@@ -417,8 +417,8 @@ Gamma_list_1D_SFL = sapply(1:nIterations, function(it) {
   gamma_SplitLasso1 <- SplitLasso_fit1$betas
   l2_31 = gamma_estimation_error(gamma_SplitLasso1, D_1 %*% Beta0)$l2_norm
   linf_31 = gamma_estimation_error(gamma_SplitLasso1, D_1 %*% Beta0)$linf_norm
-  TP_31 = length(intersect(which(gamma_SplitLasso1!=0),signal_ind_1))
-  MS_31 = length(which(gamma_SplitLasso1!=0))
+  TP_31 = length(intersect(which(abs(gamma_SplitLasso1) > 1e-4),signal_ind_1))
+  MS_31 = length(which(abs(gamma_SplitLasso1) > 1e-4))
   print(l2_31)
   print(linf_31)
   print(TP_31)
@@ -427,8 +427,8 @@ Gamma_list_1D_SFL = sapply(1:nIterations, function(it) {
   gamma_SplitLasso2 <- SplitLasso_fit2$gammas
   l2_32 = gamma_estimation_error(gamma_SplitLasso2, D_2 %*% Beta0)$l2_norm
   linf_32 = gamma_estimation_error(gamma_SplitLasso2, D_2 %*% Beta0)$linf_norm
-  TP_32 = length(intersect(which(gamma_SplitLasso2!=0),signal_ind_2))
-  MS_32 = length(which(gamma_SplitLasso2!=0))
+  TP_32 = length(intersect(which(abs(gamma_SplitLasso2) > 1e-4),signal_ind_2))
+  MS_32 = length(which(abs(gamma_SplitLasso2) > 1e-4))
   print(l2_32)
   print(linf_32)
   print(TP_32)
@@ -437,8 +437,8 @@ Gamma_list_1D_SFL = sapply(1:nIterations, function(it) {
   gamma_SplitLasso3 <- SplitLasso_fit3$gammas
   l2_33 = gamma_estimation_error(gamma_SplitLasso3, D_3 %*% Beta0)$l2_norm
   linf_33 = gamma_estimation_error(gamma_SplitLasso3, D_3 %*% Beta0)$linf_norm
-  TP_33 = length(intersect(which(gamma_SplitLasso3!=0),signal_ind_3))
-  MS_33 = length(which(gamma_SplitLasso3!=0))
+  TP_33 = length(intersect(which(abs(gamma_SplitLasso3) > 1e-4),signal_ind_3))
+  MS_33 = length(which(abs(gamma_SplitLasso3) > 1e-4))
   print(l2_33)
   print(linf_33)
   print(TP_33)

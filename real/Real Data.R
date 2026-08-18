@@ -57,7 +57,7 @@ data <- read_csv("ADNI_sMRI_Level5.csv")
 y <- as.matrix(data[, 4]); y <- y - mean(y)
 X <- as.matrix(data[, 5:ncol(data)])
 X <- scale(X, center = TRUE,  scale = FALSE)
-X <- scale(X, center = FALSE, scale = sqrt(colSums(X^2)))[,]
+X <- scale(X, center = FALSE, scale = sqrt(colSums(X^2) / nrow(X)))[,]
 
 n = dim(X)[1]
 p = dim(X)[2]

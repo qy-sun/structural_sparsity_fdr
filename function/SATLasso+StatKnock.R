@@ -25,7 +25,7 @@ SATLasso_StatKnock <- function(X, y, D,
                                cv = TRUE, cvfolds = 10,
                                lambda_cr = c("min", "1se"),
                                knockoff_args = list(),
-                               gbic = FALSE) {
+                               gbic = TRUE) {
   lambda_cr <- match.arg(lambda_cr)
   y <- matrix(y, ncol = 1)
   n <- nrow(X); p <- ncol(X); m <- nrow(D)

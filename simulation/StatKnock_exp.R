@@ -264,19 +264,19 @@ m <- nrow(D)
 rho_values <- c(0.5, 0.8)
 A_values <- c(0.1, 0.2, 0.3, 0.4, 0.5)
 
-SPL_1D_result_all <- list()
+SFL_1D_result_all <- list()
 
 for (rho in rho_values) {
   cat("Running for rho =", rho, "\n")
   
   Sigma = toeplitz(rho^(1:p - 1))
 
-  SPL_1D_list <- list()
+  SFL_1D_list <- list()
   
   for (A in A_values) {
     cat("Running for A =", A, "\n")
     
-    fdp_power_list_SPL_1D = sapply(1:nIterations, function(it) {
+    fdp_power_list_SFL_1D = sapply(1:nIterations, function(it) {
       ### Generate the Data
       Beta0 = Chain_PiecewiseConstant(p, p1, m1, A, min_interval = 3, edge_buffer = 3)
       X <- matrix(rnorm(n * p), n) %*% chol(Sigma)
@@ -332,19 +332,19 @@ for (rho in rho_values) {
       return(r)
     })
     
-    SPL_1D_list[[paste0("A=", A)]] <- fdp_power_list_SPL_1D
+    SFL_1D_list[[paste0("A=", A)]] <- fdp_power_list_SFL_1D
   }
   
-  SPL_1D_result_all[[paste0("rho=", rho)]] <- SPL_1D_list
+  SFL_1D_result_all[[paste0("rho=", rho)]] <- SFL_1D_list
 }
 
 for (rho in rho_values) {
   cat("\nResults for rho =", rho, "\n")
   for (A in A_values) {
-    result_matrix <- SPL_1D_result_all[[paste0("rho=", rho)]][[paste0("A=", A)]]
+    result_matrix <- SFL_1D_result_all[[paste0("rho=", rho)]][[paste0("A=", A)]]
     cat("A =", A, "\n")
     print(apply(result_matrix, 1, mean.se))
   }
 }
 
-save(SPL_1D_result_all, file = "StatKnock_SPL_1D.RData")
+save(SFL_1D_result_all, file = "StatKnock_SFL_1D.RData")

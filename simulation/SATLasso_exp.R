@@ -193,8 +193,8 @@ save(MMS_splitlasso_LatticeConstant, file = "MMS_splitlasso_LatticeConstant.RDat
 ### Table S.2: 1D sparse fused Lasso
 
 set.seed(2025)
-p = 1000
-n = 200
+p = 2000
+n = 400
 p1 = 20
 m1 = 5
 

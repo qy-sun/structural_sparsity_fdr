@@ -153,10 +153,10 @@ HD_SplitKnockoff <- function(
   D_scr <- D[S_gamma, S_beta, drop = FALSE]
   
   # print(dim(D_scr))
-  # print(all(which(abs(D %*% Beta0)> 1e-10) %in% S_gamma)) ## Sure screening of gamma
-  # print(all(which(abs(Beta0)> 1e-10) %in% S_beta))        ## Sure screening of beta
-  # print(which(D %*% Beta0!=0))                             ## Original active set S
-  # print(S_gamma[which(D_scr %*% Beta0[S_beta]!=0)])    ## S after screening
+  # print(all(which(abs(D %*% Beta0)> 1e-4) %in% S_gamma)) ## Sure screening of gamma
+  # print(all(which(abs(Beta0)> 1e-4) %in% S_beta))        ## Sure screening of beta
+  # print(which(abs(D %*% Beta0)> 1e-4))                             ## Original active set S
+  # print(S_gamma[which(abs(D_scr %*% Beta0[S_beta])> 1e-4)])    ## S after screening
   
   #—— selection step: SplitKnockoff ——#
   option <- list(data = NA, dim = length(data), dimnames = NULL)

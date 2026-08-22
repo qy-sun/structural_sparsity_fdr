@@ -37,7 +37,21 @@ SATLasso <- function(X,y,D, alpha_grid = 10^seq(-1, 1, length.out = 10),
   
   Q_full  <- qr.Q(qrD, complete = TRUE)
   Nmat    <- Q_full[, (r + 1):m, drop = FALSE]
-  D_plus  <- cbind(D, Nmat)
+  
+  if (r == p) {
+    D_top  <- matrix(0, r, m)
+    D_top[qrD$pivot, ] <- backsolve(qr.R(qrD), t(Q_full[, 1:r, drop = FALSE]))
+    D_bot  <- t(Nmat)
+    XD_top <- X %*% D_top
+  } else {
+    D_plus   <- cbind(D, Nmat)
+    E        <- pracma::nullspace(D_plus)
+    D_tilde  <- rbind(D_plus, t(E))
+    D_inv    <- MASS::ginv(D_tilde)
+    
+    D_dagger <- D_inv[, 1:m]
+    D_star   <- D_inv[, (m + 1):(m + (p - r))]
+  }
   
   for (i in seq_along(alpha_grid)) {
     alpha <- alpha_grid[i]
@@ -53,35 +67,31 @@ SATLasso <- function(X,y,D, alpha_grid = 10^seq(-1, 1, length.out = 10),
       n_train   <- length(y_train)
       n_test    <- length(y_test)
       
-      X_N_train <- matrix(0, nrow = length(train_idx), ncol = (m - r))
-      X_N_test <- matrix(0, nrow = nrow(X_test), ncol = (m - r))
-      
       y_aug_train <- rbind(matrix(1/sqrt(2*n_train) * y_train, ncol = 1),
                            matrix(0, m - r, 1))
-      X_aug_train <- rbind(
-        cbind(1/sqrt(2*n_train) * X_train, 1/sqrt(2*n_train) * X_N_train),
-        cbind(matrix(0, m - r, p), sqrt(alpha) * diag(m - r))
-      )
       
       y_aug_test <- rbind(matrix(1/sqrt(2*n_test) * y_test, ncol = 1),
                           matrix(0, m - r, 1))
-      X_aug_test <- rbind(
-        cbind(1/sqrt(2*n_test) * X_test, 1/sqrt(2*n_test) * X_N_test),
-        cbind(matrix(0, m - r, p), sqrt(alpha) * diag(m - r))
-      )
       
       if (r == p) {
-        X_star_train <- X_aug_train %*% MASS::ginv(D_plus)
+        X_star_train <- rbind(1/sqrt(2*n_train) * XD_top[train_idx, , drop = FALSE],
+                              sqrt(alpha) * D_bot)
         y_star_train <- y_aug_train
-        X_star_test <- X_aug_test %*% MASS::ginv(D_plus)
+        X_star_test <- rbind(1/sqrt(2*n_test) * XD_top[test_idx, , drop = FALSE],
+                             sqrt(alpha) * D_bot)
         y_star_test <- y_aug_test
       } else {
-        E       <- pracma::nullspace(D_plus)
-        D_tilde <- rbind(D_plus, t(E))
-        D_inv   <- MASS::ginv(D_tilde)
+        X_N_train <- matrix(0, nrow = length(train_idx), ncol = (m - r))
+        X_N_test <- matrix(0, nrow = nrow(X_test), ncol = (m - r))
         
-        D_dagger <- D_inv[, 1:m]
-        D_star   <- D_inv[, (m + 1):(m + (p - r))]
+        X_aug_train <- rbind(
+          cbind(1/sqrt(2*n_train) * X_train, 1/sqrt(2*n_train) * X_N_train),
+          cbind(matrix(0, m - r, p), sqrt(alpha) * diag(m - r))
+        )
+        X_aug_test <- rbind(
+          cbind(1/sqrt(2*n_test) * X_test, 1/sqrt(2*n_test) * X_N_test),
+          cbind(matrix(0, m - r, p), sqrt(alpha) * diag(m - r))
+        )
         
         XDstar_train   <- X_aug_train %*% D_star
         Mmat_train     <- diag(nrow(X_aug_train)) -
@@ -218,20 +228,22 @@ SATLasso_alpha <- function(X,y,D, alpha = 0.1, stop = NULL, signal_ind = NULL, e
   
   Q_full <- qr.Q(qrD, complete = TRUE)
   N <- Q_full[, (r + 1):m, drop = FALSE]
-  D_plus <- cbind(D, N)
-  
-  X_N <- matrix(0, n, (m-r))
   
   y_aug <- rbind(1/sqrt(2*n) * y, matrix(0, m-r, 1))
-  X_aug <- rbind(
-    cbind(1/sqrt(2*n) * X,     1/sqrt(2*n) * X_N),
-    cbind(matrix(0, m-r, p),  sqrt(alpha) * diag(m-r))
-  )
   
   if (r == p) {
-    X_star <- X_aug %*% MASS::ginv(D_plus)
+    D_top <- matrix(0, r, m)
+    D_top[qrD$pivot, ] <- backsolve(qr.R(qrD), t(Q_full[, 1:r, drop = FALSE]))
+    X_star <- rbind(1/sqrt(2*n) * (X %*% D_top), sqrt(alpha) * t(N))
     y_star <- y_aug
   } else {
+    D_plus <- cbind(D, N)
+    X_N <- matrix(0, n, (m-r))
+    X_aug <- rbind(
+      cbind(1/sqrt(2*n) * X,     1/sqrt(2*n) * X_N),
+      cbind(matrix(0, m-r, p),  sqrt(alpha) * diag(m-r))
+    )
+    
     E        <- pracma::nullspace(D_plus)
     D_tilde  <- rbind(D_plus, t(E))
     D_inv    <- MASS::ginv(D_tilde)
@@ -272,8 +284,9 @@ SLasso <- function(X,y, stop = NULL, callback = NULL, n_eff = NULL, eta0 = 2.1, 
   ## Initial model
   index.m <- sequential_select_whole(X,y,p,path)
   path    <- c(path,index.m)
-  W <- diag(rep(1,n)) - (X[,index.m] %*% t(X[,index.m])) / as.numeric(t(X[,index.m]) %*% X[,index.m])
-  Ycheck <- W%*%y
+  q <- X[,index.m] / sqrt(as.numeric(t(X[,index.m]) %*% X[,index.m]))
+  Xcheck <- X - q %*% (t(q) %*% X)
+  Ycheck <- y - q %*% (t(q) %*% y)
   if (gbic) EBIC[1] <- n_eff*log(t(Ycheck)%*%Ycheck/n_eff) + length(path)*log(n_eff) + eta*lchoose(p,length(path))
 
   k<-1
@@ -284,18 +297,16 @@ SLasso <- function(X,y, stop = NULL, callback = NULL, n_eff = NULL, eta0 = 2.1, 
     }
 
     ## Sequential Select
-    Xcheck<-W%*%X
-    Ycheck<-W%*%y
     index.m<-sequential_select_whole(Xcheck,Ycheck,p,path)
     path<-c(path,index.m)
 
     if (!is.null(stop) && k == stop) break
 
     ## Update Projector
-    W <- W %*% (diag(rep(1,n)) - (X[,index.m] %*% t(X[,index.m]) %*% W)
-                / as.numeric(t(X[,index.m]) %*% W %*% X[,index.m]))
+    q <- Xcheck[,index.m] / sqrt(as.numeric(t(Xcheck[,index.m]) %*% Xcheck[,index.m]))
+    Xcheck <- Xcheck - q %*% (t(q) %*% Xcheck)
 
-    Ycheck <- W%*%y
+    Ycheck <- Ycheck - q %*% (t(q) %*% Ycheck)
     if (gbic) EBIC[k+1] <- n_eff*log(t(Ycheck)%*%Ycheck/n_eff) + length(path)*log(n_eff) + eta*lchoose(p,length(path))
     # if (EBIC[k+1]>EBIC[k]) break
 

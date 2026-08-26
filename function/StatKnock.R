@@ -81,10 +81,13 @@ StatKnock <- function(X, y, D, L = 100, q = 0.1,
     D_dagger <- D_tilde_inverse[, 1:m]
     D_star <- D_tilde_inverse[, (m + 1):(m + (p - r))]
     XDstar <- X_plus %*% D_star
-    M_XDstar <- diag(n) - XDstar %*% solve(t(XDstar) %*% XDstar) %*% t(XDstar)
-    y_star <- M_XDstar %*% y
-    X_star <- M_XDstar %*% X_plus %*% D_dagger
+    sv <- svd(XDstar, nu = n)
+    rk <- sum(sv$d > 1e-10 * max(sv$d))
+    Q_W <- sv$u[, (rk + 1):n, drop = FALSE]
+    y_star <- t(Q_W) %*% y
+    X_star <- t(Q_W) %*% X_plus %*% D_dagger
   }
+  n <- nrow(X_star)
   
   res <- generate_knockoff(
     X_star,

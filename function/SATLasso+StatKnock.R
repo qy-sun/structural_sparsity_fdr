@@ -81,7 +81,10 @@ SATLasso_StatKnock <- function(X, y, D,
   ## 3) Selection on (X2, y2)
   #############################################
   if (gbic) {
-    if (is.null(dim(D_scr))) {
+    m_scr <- length(S_gamma)
+    p_scr <- length(S_beta)
+    r_scr <- if (is.null(dim(D_scr))) 0 else qr(D_scr)$rank
+    if (is.null(dim(D_scr)) || n2 - (p_scr - r_scr) < 2 * m_scr) {
       Sel <- integer(0)
       Sel_plus <- integer(0)
     } else {
